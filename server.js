@@ -14,6 +14,10 @@ connectDB();
 // Middleware
 app.use(express.json());
 
+const cors = require('cors');
+app.use(cors());  // Enable CORS for all routes
+
+
 // Routes
 app.use('/books', bookRoutes);
 
