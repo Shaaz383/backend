@@ -1,11 +1,19 @@
 // Import express
 const express = require('express');
+const mongoose = require('mongoose');
+const Book = require('./models/Book');
 
 // Initialize the express app
 const app = express();
 
 // Middleware to parse JSON requests (for later chapters)
 app.use(express.json());
+
+//connecting mongodb
+mongoose.connect("mongodb://localhost:27017/mernLibrary").then(()=>{
+  console.log("Connected to MongoDB 🔥");
+})
+
 
 // Define a route to handle requests to the home route
 
