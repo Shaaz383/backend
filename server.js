@@ -1,29 +1,23 @@
-// server.js
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const bookRoutes = require('./routes/bookRoutes');
+const cors = require('cors');
 
-dotenv.config(); // Load environment variables
+const bookRoutes = require('./routes/bookRoutes');
+const userRoutes = require('./routes/userRoutes');
+
+dotenv.config();
 
 const app = express();
-
-// Connect to MongoDB
 connectDB();
 
-// Middleware
 app.use(express.json());
+app.use(cors());
 
-const cors = require('cors');
-app.use(cors());  // Enable CORS for all routes
-
-
-// Routes
 app.use('/books', bookRoutes);
+app.use('/api/users', userRoutes);
 
-// Home route
 app.get('/', (req, res) => res.send('Welcome to the MERN Library API'));
 
-// Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
