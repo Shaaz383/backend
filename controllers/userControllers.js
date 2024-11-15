@@ -30,6 +30,7 @@ exports.loginUser = async (req, res) => {
 
     // Find user
     const user = await User.findOne({ username });
+    console.log(user);
     if (!user) return res.status(400).json({ message: 'User not found' });
 
     // Check password
@@ -44,3 +45,15 @@ exports.loginUser = async (req, res) => {
     res.status(500).json({ message: 'Error logging in', error });
   }
 };
+
+exports.getUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password'); // Exclude password
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user', error });
+  }
+};
+
