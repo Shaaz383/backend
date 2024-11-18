@@ -80,7 +80,14 @@ exports.deleteBook = async (req, res) => {
 exports.getBooksByCategory = async (req, res) => {
   try {
     const category = req.params.category; // Category from the URL parameter
-    const books = await Book.find({ category }); // Find books that match the category
+    
+    // Validate category
+    if (!category) {
+      return res.status(400).json({ message: 'Category parameter is required' });
+    }
+
+    // Case-insensitive search (optional but useful if you want to handle different letter cases)
+    const books = await Book.find({ category: { $regex: category, $options: 'i' } });
 
     if (books.length > 0) {
       res.json(books);
@@ -91,6 +98,7 @@ exports.getBooksByCategory = async (req, res) => {
     res.status(500).json({ message: 'Error fetching books by category', error });
   }
 };
+
 
 // Fetch all books by author
 exports.getBooksByAuthor = async (req, res) => {
