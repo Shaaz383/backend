@@ -2,58 +2,72 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+// Register a new user
 exports.registerUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, password, fullName, email, mobileNumber } = req.body;
 
-    // Check if user exists
-    const existingUser = await User.findOne({ username });
-    if (existingUser) return res.status(400).json({ message: 'User already exists' });
+    // Check if username or email already exists
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Username or email already exists' });
+    }
 
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Save user
-    const newUser = new User({ username, password: hashedPassword });
-    await newUser.save();
+    // Create a new user object
+    const newUser = new User({
+      username,
+      password: hashedPassword,
+      fullName,
+      email,
+      mobileNumber,
+    });
 
+    // Save user to the database
+    await newUser.save();
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error registering user', error });
+    console.error(error);
+    res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 };
 
+// Login a user
 exports.loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    // Find user
+    // Find user by username
     const user = await User.findOne({ username });
-    console.log(user);
     if (!user) return res.status(400).json({ message: 'User not found' });
 
-    // Check password
+    // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
 
-    // Generate JWT
+    // Generate JWT token
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     res.json({ message: 'Login successful', token });
   } catch (error) {
-    res.status(500).json({ message: 'Error logging in', error });
+    console.error(error);
+    res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 };
 
+// Get user details (protected route)
 exports.getUser = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password'); // Exclude password
+    // Find user by ID, excluding the password field
+    const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ message: 'User not found' });
 
     res.json(user);
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching user', error });
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching user details', error: error.message });
   }
 };
-

@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 
 // Define the schema (structure) for a Book
 const bookSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  pages: { type: Number, required: true },
-  published: { type: Date, required: true },
+  title: { type: String, required: true },  // Book title
+  author: { type: String, required: true }, // Author name
+  pages: { type: Number, required: true },  // Number of pages
+  published: { type: Date, required: true }, // Published date
+  image: { type: String, required: true },  // URL or path of the book's image
+  category: { type: String, required: true }, // Book category (e.g., Fiction, Non-Fiction)
 });
 
 // Create the Book model from the schema
