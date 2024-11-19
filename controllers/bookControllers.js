@@ -29,6 +29,7 @@ exports.addBook = async (req, res) => {
   try {
     const { title, author, pages, published, image, category } = req.body;
 
+    // Create a new book instance
     const newBook = new Book({
       title,
       author,
@@ -38,12 +39,18 @@ exports.addBook = async (req, res) => {
       category,
     });
 
+    // Save the book to the database
     const savedBook = await newBook.save();
-    res.status(201).json(savedBook);
+
+    // Send a success response
+    return res.status(201).json(savedBook);
   } catch (error) {
+    // Send an error response and terminate execution
     res.status(400).json({ message: 'Error adding book', error });
+    return; // Explicit return to stop further execution
   }
 };
+
 
 // Update a book
 exports.updateBook = async (req, res) => {

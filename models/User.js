@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
   ],
   readingHistory: [String], // List of books read by the user
   recommendations: [String], // Recommended books for the user
+  role: { type: String, default: 'user' }, // Can be 'user' or 'admin'
 });
 
 module.exports = mongoose.model('User', userSchema);

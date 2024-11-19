@@ -5,7 +5,7 @@ const User = require('../models/User');
 // Register a new user
 exports.registerUser = async (req, res) => {
   try {
-    const { username, password, fullName, email, mobileNumber } = req.body;
+    const { username, password, fullName, email, mobileNumber , role } = req.body;
 
     // Check if username or email already exists
     const existingUser = await User.findOne({ $or: [{ username }, { email }] });
@@ -24,6 +24,7 @@ exports.registerUser = async (req, res) => {
       fullName,
       email,
       mobileNumber,
+      role,
     });
 
     // Save user to the database

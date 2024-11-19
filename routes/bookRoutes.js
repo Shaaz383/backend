@@ -1,5 +1,6 @@
 const express = require('express');
-const verifyToken = require('../middleware/authMiddleware');
+const {verifyToken,verifyAdmin} = require('../middleware/authMiddleware');
+
 const {
   getAllBooks,
   getBookById,
@@ -14,9 +15,9 @@ const router = express.Router();
 
 router.get('/', getAllBooks);
 router.get('/:id', getBookById);
-router.post('/', verifyToken, addBook);  // Protected route
-router.put('/:id', verifyToken, updateBook);
-router.delete('/:id', verifyToken, deleteBook);
+router.post('/addBook', verifyToken,verifyAdmin, addBook);  // Protected route
+router.put('/:id', verifyToken,verifyAdmin, updateBook);
+router.delete('/:id', verifyToken,verifyAdmin, deleteBook);
 
 // New routes for categories and authors
 router.get('/category/:category', getBooksByCategory); // Get books by category
