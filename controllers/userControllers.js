@@ -72,3 +72,31 @@ exports.getUser = async (req, res) => {
     res.status(500).json({ message: 'Error fetching user details', error: error.message });
   }
 };
+
+// Admin Login
+exports.adminLogin = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Find user by username
+    const user = await User.findOne({ username });
+    if (!user) return res.status(400).json({ message: 'Admin not found' });
+
+    // Check if the user is an admin
+    if (user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Admins only.' });
+    }
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Invalid password' });
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ message: 'Admin login successful', token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error logging in', error: error.message });
+  }
+};
