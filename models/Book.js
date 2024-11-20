@@ -8,6 +8,7 @@ const bookSchema = new mongoose.Schema({
   published: { type: Date, required: true }, // Published date
   image: { type: String, required: true },  // URL or path of the book's image
   category: { type: String, required: true }, // Book category (e.g., Fiction, Non-Fiction)
+  pdf: { type: String }, // Path or URL for the book's PDF
 });
 
 // Create the Book model from the schema

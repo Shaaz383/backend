@@ -29,6 +29,9 @@ exports.addBook = async (req, res) => {
   try {
     const { title, author, pages, published, image, category } = req.body;
 
+        // Check if a PDF file was uploaded
+        const pdfPath = req.file ? req.file.path : null;
+
     // Create a new book instance
     const newBook = new Book({
       title,
@@ -37,6 +40,7 @@ exports.addBook = async (req, res) => {
       published,
       image,
       category,
+      pdf: pdfPath,
     });
 
     // Save the book to the database
@@ -55,6 +59,14 @@ exports.addBook = async (req, res) => {
 // Update a book
 exports.updateBook = async (req, res) => {
   try {
+
+    const updates = { ...req.body };
+
+    // Check if a PDF file was uploaded
+    if (req.file) {
+      updates.pdf = req.file.path;
+    }
+
     const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
       new: true, // Return the updated book
     });
