@@ -1,0 +1,32 @@
+Books
+http://localhost:3000/books  - get all books
+
+
+
+
+Users
+http://localhost:3000/api/users/register - add user 
+data :  {
+      "username": "adminUser",
+      "password": "12341234",
+      "fullName": "John Admin",
+      "email": "admin@example.com",
+      "mobileNumber": "9876543210",
+      "role": "admin"
+}
+
+http://localhost:3000/api/users/admin-login - admin login
+
+data : {
+  {
+  "username": "adminUser",
+  "password": "12341234"
+}
+}
+
+http://localhost:3000/api/users/login - login
+{
+    "username" : "adminUser",
+    "password" : "12341234"
+}
+
